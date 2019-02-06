@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_GET_SINGLE_FILE = 1;
     private static final String TAG = MainActivity.class.getSimpleName();
-    private CardView cardView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        cardView = findViewById(R.id.card_view);
+        CardView cardView = findViewById(R.id.card_view);
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
