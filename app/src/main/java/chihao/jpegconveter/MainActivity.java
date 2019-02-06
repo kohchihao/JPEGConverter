@@ -4,12 +4,9 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -19,9 +16,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
-import java.io.File;
-import java.io.FileOutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,48 +51,14 @@ public class MainActivity extends AppCompatActivity {
                     Uri selectedImage = data.getData();
                     Log.e(TAG, selectedImage.getPath());
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                    saveToInternalStorage(bitmap);
+                    //saveToInternalStorage(bitmap);
+                    Intent i = new Intent(MainActivity.this, ConvertActivity.class);
+                    i.putExtra("UriImage", selectedImage.toString());
+                    startActivity(i);
                 }
             }
         } catch (Exception e) {
             Log.e("FileSelectorActivity", "File select error", e);
-        }
-    }
-
-
-    /**
-     * Save Picture to internal storage.
-     *
-     * @param bitmapImage target bitmap image.
-     */
-    private void saveToInternalStorage(Bitmap bitmapImage) {
-
-        File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "JPEG-Converter");
-        // Create imageDir
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-        String fileName = String.valueOf(System.currentTimeMillis()) + ".jpg";
-        File filePath = new File(directory, fileName);
-
-        FileOutputStream fos = null;
-        try {
-
-            fos = new FileOutputStream(filePath);
-
-            //add white background
-            Bitmap bitmap = Bitmap.createBitmap(bitmapImage.getWidth(), bitmapImage.getHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            canvas.drawColor(Color.WHITE);
-            canvas.drawBitmap(bitmapImage, 0, 0, null);
-            canvas.save();
-
-            //convert to jpg
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.close();
-            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(filePath)));
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
